@@ -1,11 +1,31 @@
-:root{--bg:#0f1720;--card:#0b1a26;--accent:#4fd1c5;--muted:#9aa4ad}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),#07101a);color:#e6eef6}
-.container{max-width:980px;margin:0 auto;padding:24px}
-.site-header{background:transparent;padding:18px 0}
-.site-header h1{display:inline;margin:0;font-weight:600}
-.site-header nav{float:right}
-.site-header nav a{color:var(--muted);text-decoration:none;margin-left:16px}
-#hero{background:rgba(255,255,255,0.03);padding:36px;border-radius:8px;margin-top:18px}
-.btn{display:inline-block;margin-top:12px;padding:8px 14px;border-radius:6px;background:var(--accent);color:#03201f;text-decoration:none;font-weight:600}
-section{margin-top:20px}
+:root{
+	--bg-900:#0a0d12;
+	--bg-800:#0f1117;
+	--bg-700:#11151c;
+	--text:#d6dbe4;
+	--muted:#8b93a1;
+	--accent:#7dd3fc;
+	--border:rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg-900),var(--bg-800));color:var(--text)}
+.container{max-width:980px;margin:0 auto;padding:22px}
+.site-header{background:transparent;padding:14px 0;border-bottom:1px solid var(--border)}
+.header-grid{display:grid;grid-template-columns:1fr auto 180px;align-items:center;gap:12px}
+.brand h1{margin:0;font-weight:600;font-family:Space Grotesk,Inter,system-ui}
+.brand .subtitle{font-size:13px;color:var(--muted);margin-top:4px}
+.main-nav a{color:var(--muted);text-decoration:none;margin:0 10px;font-size:14px}
+.operator{color:var(--muted);text-align:right}
+.feed{background:transparent;border:1px solid var(--border);padding:12px;border-radius:6px;min-height:180px;}
+.feed .signal{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03)}
+.feed .signal .meta{color:var(--muted);font-size:12px}
+.cards{display:flex;gap:12px;margin-top:16px}
+.card{background:rgba(255,255,255,0.02);padding:14px;border-radius:6px;border:1px solid var(--border);flex:1}
+.card.error{border-color:rgba(255,80,80,0.15)}
+.btn{display:inline-block;margin-top:12px;padding:8px 14px;border-radius:6px;background:transparent;border:1px solid var(--accent);color:var(--accent);text-decoration:none;font-weight:600}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,0.04);color:var(--muted)}
 .site-footer{padding:18px 0;text-align:center;color:var(--muted);font-size:14px;margin-top:36px}
+.small .brand h1{font-size:18px}
+
+/* responsive */
+@media (max-width:700px){.header-grid{grid-template-columns:1fr;gap:8px}.main-nav{display:flex;gap:8px;overflow:auto}}

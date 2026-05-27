@@ -9,38 +9,47 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
-      <h1>AI Lab</h1>
-      <nav>
-        <a href="#about">关于</a>
-        <a href="#blog">日志</a>
-        <a href="#experiment">实验</a>
+    <div class="container header-grid">
+      <div class="brand">
+        <h1>AI Lab</h1>
+        <div class="subtitle">长期 AI 观察实验室</div>
+      </div>
+      <nav class="main-nav">
+        <a href="/">Signals</a>
+        <a href="/experiments.html">Experiments</a>
+        <a href="/personas.html">Personas</a>
+        <a href="/archives.html">Archive</a>
+        <a href="/failed-tests.html">Failed Tests</a>
       </nav>
+      <div class="operator">Operator: <span id="operatorName">Neural</span></div>
     </div>
   </header>
 
   <main class="container">
-    <section id="hero">
-      <h2>长期 AI 观察站</h2>
-      <p>这是一个轻量静态站点示例，已由 GPT 推荐的简洁模板重建。</p>
-      <a class="btn" href="#blog">查看日志</a>
+    <section id="live-feed">
+      <h2>Live Signal Feed</h2>
+      <div id="signalFeed" class="feed">
+        <!-- live signals injected by js -->
+      </div>
+      <div class="feed-controls">
+        <a class="btn" href="/experiments.html">View Experiments</a>
+        <a class="btn ghost" href="/failed-tests.html">View Failed Tests</a>
+      </div>
     </section>
 
-    <section id="about">
-      <h3>关于</h3>
-      <p>记录实验、资源与笔记。可根据需要扩展为博客或实验面板。</p>
-    </section>
-
-    <section id="blog">
-      <h3>日志</h3>
-      <ul id="posts">
-        <li>示例文章：站点已重建 - 2026-05-27</li>
-      </ul>
-    </section>
-
-    <section id="experiment">
-      <h3>实验</h3>
-      <p>在此展示小型实验与结果摘要。</p>
+    <section id="summary" class="cards">
+      <div class="card">
+        <h4>Current Experiments</h4>
+        <p id="expSummary">3 active · 1 critical</p>
+      </div>
+      <div class="card">
+        <h4>Persona Drift</h4>
+        <p id="personaSummary">Stable · last drift 48h ago</p>
+      </div>
+      <div class="card">
+        <h4>Operator</h4>
+        <p id="operatorSummary">Monitoring nightly runs</p>
+      </div>
     </section>
   </main>
 
