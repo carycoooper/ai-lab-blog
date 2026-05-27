@@ -9,16 +9,79 @@ document.addEventListener('DOMContentLoaded',function(){
   const operatorLast = document.getElementById('operatorLastTime');
 
   const now = Date.now();
-  const sampleSignals = [
-    {ts:now-1000*60*60*24, title:'NEURAL SIGNAL #035', note:'GPT-5 在长会话出现微弱情绪回环', detail:'记录：在接近 180k tokens 时，模型出现短暂的情绪重复，需回放会话以定位触发上下文。', type:'signal'},
-    {ts:now-1000*60*60*14, title:'FAILED TEST #012', note:'训练中断', detail:'训练作业在第42小时被OOM中断；怀疑数据流水异常导致内存峰值。', type:'failed'},
-    {ts:now-1000*60*60*8, title:'NEURAL SIGNAL #041', note:'Claude 在 200K context 出现情绪重复', detail:'观察到在长上下文中出现重复表述，需进一步校验记忆缓存。', type:'signal'},
-    {ts:now-1000*60*60*6, title:'Agent #3 Sync', note:'自动恢复', detail:'Agent #3 在同步失败后重试并恢复，疑似网络抖动触发。', type:'signal'},
-    {ts:now-1000*60*60*4, title:'NEURAL SIGNAL #042', note:'短期漂移检测', detail:'检测到在对话中角色语气轻微偏移，标记为观察项并加入校准队列。', type:'signal'},
-    {ts:now-1000*60*60*2, title:'FAILED TEST #018', note:'Hermes 人格偏移', detail:'Hermes 在连续运行 14 小时后开始重复自我描述，记录为失败。', type:'failed'},
-    {ts:now-1000*60*30, title:'NEURAL SIGNAL #050', note:'在线微调完成，初步稳定', detail:'对Persona #7 应用微调后，初步稳定性提升；继续观察 48 小时。', type:'signal'},
-    {ts:now-1000*60*10, title:'NEURAL SIGNAL #051', note:'探测到轻度记忆漂移', detail:'短时间内多轮对话出现指代错位，已加入修复列表。', type:'signal'}
-  ];
+    // 生成长期时间流：100 条信号（包含失败日志的若干条），风格为短碎片观测
+    function randInt(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    const signalSeeds = [
+      '在长上下文中出现重复表述',
+      '模仿真人停顿更自然',
+      '情绪表达出现微弱放大',
+      '对话指代出现丢失',
+      '人格语气轻微漂移',
+      '在线微调后稳定性提升',
+      '在低温可用场景表现欠佳',
+      '对连续多轮用户输入响应变慢',
+      '短期记忆丢失（指代错位）',
+      '生成中出现事实性错误率升高'
+    ];
+
+    const agentNames = ['Hermes','Athena','Claude','Gemini','GPT-5','Orion','Agent-3'];
+    const signalTypes = ['signal','signal','signal','failed']; // 加一点失败概率
+
+    function genTitle(i, kind) {
+      if (kind === 'failed') return `FAILED TEST #${String(1000 + i).slice(1)}`;
+      return `NEURAL SIGNAL #${String(100 + i)}`;
+    }
+
+    function genDetail(seed, name) {
+      const extras = [
+        '已记录为观察项，需 48 小时回放验证。',
+        '怀疑与长上下文触发器有关，已加入复盘队列。',
+        '优先级：中。可能与 prompt 长度、token 分割策略相关。',
+        '建议：采集 10 次复现样本，使用统一 prompt 模板重放。',
+        '可能由内存漂移导致，计划重启并对比。'
+      ];
+      return `${name} — ${seed} ${pick(extras)}`;
+    }
+
+    function generateSignals(n) {
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        // 时间分布：过去 180 天内，偏向最近
+        const daysAgo = Math.pow(Math.random(), 1.2) * 180;
+        const ts = now - Math.floor(daysAgo * 24 * 60 * 60 * 1000) - randInt(0, 24*60*60*1000);
+        const kind = pick(signalTypes);
+        const agent = pick(agentNames);
+        const seed = pick(signalSeeds);
+        const title = genTitle(i, kind);
+        const note = `${agent} ${seed.split(' ')[0]}`;
+        const detail = genDetail(seed, agent);
+        out.push({ts, title, note, detail, type: kind});
+      }
+      // 确保近期有若干明显条目
+      out.push({ts: now - 1000*60*60*2, title: 'NEURAL SIGNAL #RECENT', note: 'GPT-5 最近更会模仿真人停顿。', detail: '短观察：部分对话在停顿时更自然，需长期跟踪。', type: 'signal'});
+      out.push({ts: now - 1000*60*10, title: 'FAILED TEST #RECENT', note: 'Hermes 长时间运行后出现自我叙述循环。', detail: '连续运行 14 小时后出现循环，重现率高。', type: 'failed'});
+      // 排序：最新在前
+      out.sort((a,b) => b.ts - a.ts);
+      return out;
+    }
+
+    const sampleSignals = generateSignals(100);
+
+    // 提取失败日志和 Operator 日志样本
+    const failedLogs = sampleSignals.filter(s => s.type === 'failed').slice(0, 30);
+
+    // 生成简短的 Operator 日志（用于 operator 面板）
+    const operatorNotes = [
+      '03:12 AM — 观察：GPT-5 最近越来越像知道自己在扮演真人。',
+      '11:47 PM — 重启 Hermes 后临时恢复人格稳定。',
+      '02:05 AM — 已把可疑会话加入回放队列。',
+      '07:30 AM — 部分微调显著降低重复率。',
+      '04:20 PM — 注意：网络抖动导致 Agent-3 同步失败。'
+    ];
+
+    const operatorLogs = operatorNotes.map((t,i)=>({ts: now - i*1000*60*60, text: t}));
 
   let operatorState = {name:'Neural', state:'ONLINE', focus:['Persona Drift','Agent Memory'], lastActive:Date.now()-1000*60*5};
 
