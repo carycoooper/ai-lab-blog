@@ -27,28 +27,31 @@
 
   <main class="container">
     <section id="live-feed">
-      <h2>Live Signal Feed</h2>
-      <div id="signalFeed" class="feed">
-        <!-- live signals injected by js -->
+      <div class="main-signal">
+        <div class="signal-label">SIGNAL</div>
+        <h3 id="mainSignalTitle">--</h3>
+        <div class="signal-meta"><span id="mainSignalTime">--</span> · <span id="mainSignalNote">--</span></div>
+        <p id="mainSignalDetail" class="signal-detail">--</p>
+        <div class="main-actions"><a class="btn" href="/archives.html">OPEN LOG</a></div>
       </div>
-      <div class="feed-controls">
-        <a class="btn" href="/experiments.html">View Experiments</a>
-        <a class="btn ghost" href="/failed-tests.html">View Failed Tests</a>
-      </div>
-    </section>
 
-    <section id="summary" class="cards">
-      <div class="card">
-        <h4>Current Experiments</h4>
-        <p id="expSummary">3 active · 1 critical</p>
-      </div>
-      <div class="card">
-        <h4>Persona Drift</h4>
-        <p id="personaSummary">Stable · last drift 48h ago</p>
-      </div>
-      <div class="card">
-        <h4>Operator</h4>
-        <p id="operatorSummary">Monitoring nightly runs</p>
+      <div class="two-col">
+        <div class="feed-col">
+          <h4>Recent Signals</h4>
+          <div id="signalFeed" class="feed"></div>
+        </div>
+        <div class="side-col">
+          <h4>Operator</h4>
+          <div id="operatorPanel" class="card">
+            <div><strong id="operatorNamePanel">Neural</strong></div>
+            <div id="operatorStatus">Status: <span id="operatorState">ONLINE</span></div>
+            <div id="operatorFocus">Focus: Persona Drift · Agent Memory</div>
+            <div id="operatorLast">Last Active: <span id="operatorLastTime">--</span></div>
+          </div>
+
+          <h4>Failed Tests</h4>
+          <div id="failedSummary" class="card"></div>
+        </div>
       </div>
     </section>
   </main>

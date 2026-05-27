@@ -18,6 +18,17 @@ body{margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;background:
 .operator{color:var(--muted);text-align:right}
 .feed{background:transparent;border:1px solid var(--border);padding:12px;border-radius:6px;min-height:180px;}
 .feed .signal{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03)}
+.main-signal{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:8px;border:1px solid var(--border);margin-bottom:14px}
+.main-signal .signal-label{font-size:12px;color:var(--muted);letter-spacing:1px}
+.main-signal h3{margin:6px 0 4px 0}
+.main-signal .signal-meta{color:var(--muted);font-size:13px;margin-bottom:8px}
+.main-signal .signal-detail{margin:8px 0;color:var(--text)}
+.two-col{display:flex;gap:12px;margin-top:12px}
+.feed-col{flex:2}
+.side-col{flex:1}
+.failed .meta{color:rgba(255,80,80,0.9)}
+.failed-log pre{white-space:pre-wrap;background:rgba(0,0,0,0.15);padding:8px;border-radius:6px}
+.operator .card{padding:10px}
 .feed .signal .meta{color:var(--muted);font-size:12px}
 .cards{display:flex;gap:12px;margin-top:16px}
 .card{background:rgba(255,255,255,0.02);padding:14px;border-radius:6px;border:1px solid var(--border);flex:1}
@@ -29,3 +40,4 @@ body{margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;background:
 
 /* responsive */
 @media (max-width:700px){.header-grid{grid-template-columns:1fr;gap:8px}.main-nav{display:flex;gap:8px;overflow:auto}}
+@media (max-width:900px){.two-col{flex-direction:column}.cards{flex-direction:column}}

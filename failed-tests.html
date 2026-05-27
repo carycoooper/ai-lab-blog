@@ -17,9 +17,16 @@
     </div>
   </header>
   <main class="container">
-    <h2>Failed Tests</h2>
-    <div class="cards">
-      <div class="card error"><h4>Failed Test #284</h4><p>Context Collapse — retry queued.</p></div>
+    <h2>Failed Tests (Raw Logs)</h2>
+    <div id="failedLogs">
+      <div class="failed-log">
+        <div class="meta">2026-05-27 03:14:02 · FAILED TEST #018</div>
+        <pre>Hermes 在连续运行 14 小时后偏离人格设定；出现重复自述与循环行为；标记为 FAILED.</pre>
+      </div>
+      <div class="failed-log">
+        <div class="meta">2026-05-27 02:33:18 · FAILED TEST #284</div>
+        <pre>Context Collapse: Agent #3 在多轮对话时丢失先前实体引用，触发回滚。</pre>
+      </div>
     </div>
   </main>
   <script src="js/main.js"></script>
