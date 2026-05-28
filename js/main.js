@@ -147,13 +147,61 @@ document.addEventListener('DOMContentLoaded',async function(){
 
   function renderFeed(){
     if(!feed) return;
-    feed.innerHTML = sampleSignals.map(s=>`<div class="signal ${s.type==='failed'?'failed':''}"><div class="meta">${fmtTime(s.ts)} · ${s.title}</div><div class="txt">${s.detail}</div></div>`).join('');
+    // incremental render for long timelines
+    const pageSize = 50;
+    let rendered = feed.getAttribute('data-rendered')|0;
+    if(!rendered) rendered = 0;
+    const slice = sampleSignals.slice(rendered, rendered + pageSize);
+    const html = slice.map(s=>{
+      const rel = timeAgo(s.ts);
+      const badge = s.type==='failed' ? '<span class="badge warn">FAILED</span>' : '<span class="badge ok">LIVE</span>';
+      return `<div class="signal ${s.type==='failed'?'failed':''}">`+
+        `<div class="meta">${fmtTimeShort(s.ts)} · ${s.title} ${badge}</div>`+
+        `<div class="txt">${escapeHtml(s.detail || s.content || '')}</div>`+
+        `<div class="muted">${rel}</div>`+
+        `</div>`;
+    }).join('');
+    feed.insertAdjacentHTML('beforeend', html);
+    rendered += slice.length;
+    feed.setAttribute('data-rendered', rendered);
+    // attach infinite scroll
+    if(rendered < sampleSignals.length){
+      if(!window._signalScrollAttached){
+        window._signalScrollAttached = true;
+        window.addEventListener('scroll', ()=>{
+          if((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 400)){
+            renderFeed();
+          }
+        });
+      }
+    }
+  }
+
+  function fmtTimeShort(ts){
+    const d = new Date(ts);
+    return d.toLocaleString();
+  }
+
+  function timeAgo(ts){
+    const s = Math.floor((Date.now() - ts)/1000);
+    if(s < 60) return `${s}s ago`;
+    const m = Math.floor(s/60);
+    if(m < 60) return `${m}m ago`;
+    const h = Math.floor(m/60);
+    if(h < 24) return `${h}h ago`;
+    const d = Math.floor(h/24);
+    return `${d}d ago`;
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>\"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; });
   }
 
   function renderFailedSummary(){
-    if(!failedSummary) return;
-    const failed = sampleSignals.filter(s=>s.type==='failed');
-    failedSummary.innerHTML = failed.map(f=>`<div class="failed-log"><div class="meta">${fmtTime(f.ts)} · ${f.title}</div><pre>${f.detail}</pre></div>`).join('');
+    const container = failedSummary || document.getElementById('failedLogs');
+    if(!container) return;
+    const failed = (failedLogs && failedLogs.length)? failedLogs : sampleSignals.filter(s=>s.type==='failed');
+    container.innerHTML = failed.map(f=>`<div class="failed-log"><div class="meta">${fmtTime(f.ts)} · ${escapeHtml(f.title)} ${f.severity?'<span class="badge warn">'+f.severity+'</span>':''}</div><pre>${escapeHtml(f.detail || f.content || '')}</pre></div>`).join('');
   }
 
   function renderOperator(){
