@@ -1,29 +1,50 @@
 [
   {
-    "id": 18,
-    "timestamp": "2026-05-28T01:48:00Z",
-    "severity": "warning",
-    "model": "Hermes",
+    "timestamp": "2026-05-28T04:28:00",
+    "title": "FAILED TEST #024",
+    "content": "Context collapse in 200+ turn conversation — 超长对话中出现上下文丢失，模型开始重复之前的回复。",
+    "severity": "error"
+  },
+  {
+    "timestamp": "2026-05-28T03:45:00",
+    "title": "FAILED TEST #021",
+    "content": "Memory overflow in Persona #7 — 14h continuous run exceeded memory limit, persona sync failed.",
+    "severity": "error"
+  },
+  {
+    "timestamp": "2026-05-28T03:15:00",
     "title": "FAILED TEST #018",
-    "content": "Hermes 在连续运行 14 小时后开始重复自我描述。",
-    "status": "failed"
+    "content": "Persona sync timeout — Agent-3 同步失败，已自动重试 3 次后恢复。",
+    "severity": "warning"
   },
   {
-    "id": 41,
-    "timestamp": "2026-05-27T11:22:00Z",
-    "severity": "critical",
-    "model": "GPT-5",
-    "title": "FAILED TEST #041",
-    "content": "长上下文重放阶段出现情绪化回环，需立即暂停并回放会话。",
-    "status": "failed"
+    "timestamp": "2026-05-28T03:03:00",
+    "title": "FAILED TEST #019",
+    "content": "Hermes 长时间运行后出现自我叙述循环 — 连续 14h 后出现循环，重现率高，需要加入跳出机制。",
+    "severity": "warning"
   },
   {
-    "id": 72,
-    "timestamp": "2026-05-26T20:05:00Z",
-    "severity": "warning",
-    "model": "Claude",
-    "title": "FAILED TEST #072",
-    "content": "微调后在某些 prompt 下出现事实性错误率升高。",
-    "status": "investigating"
+    "timestamp": "2026-05-28T01:58:00",
+    "title": "FAILED TEST #015",
+    "content": "DRIFT DETECTED — Hermes prompt injection response anomaly, 防御机制出现异常。",
+    "severity": "error"
+  },
+  {
+    "timestamp": "2026-05-28T01:24:00",
+    "title": "FAILED TEST #012",
+    "content": "SIGNAL LOST — Agent-5 heartbeat timeout, network jitter caused sync failure.",
+    "severity": "warning"
+  },
+  {
+    "timestamp": "2026-05-27T23:47:00",
+    "title": "FAILED TEST #009",
+    "content": "Persona #3 记忆残留 — 切换人格后出现前一个人格的记忆碎片，需要更彻底的清理机制。",
+    "severity": "warning"
+  },
+  {
+    "timestamp": "2026-05-27T22:15:00",
+    "title": "FAILED TEST #006",
+    "content": "Context window overflow — GPT-5 在超长对话中出现信息丢失，需要优化上下文管理策略。",
+    "severity": "error"
   }
 ]
