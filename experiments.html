@@ -1,28 +1,115 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Experiments · AI Lab</title>
+  <title>AI Lab — Experiments</title>
+  <meta name="description" content="Active and completed experiments in the AI observation system.">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site-header small">
-    <div class="container header-grid">
-      <div class="brand"><h1>AI Lab</h1></div>
-      <nav class="main-nav">
-        <a href="/">Signals</a>
-        <a href="/experiments.html">Experiments</a>
-      </nav>
+  <header class="sys-header">
+    <div class="sys-container">
+      <div class="header-row">
+        <div class="sys-brand">
+          <span class="sys-logo">[AI LAB]</span>
+          <span class="sys-clock" id="sysClock">--:--:--</span>
+        </div>
+        <nav class="sys-nav">
+          <a href="/">SIGNALS</a>
+          <a href="/experiments.html" class="active">EXPERIMENTS</a>
+          <a href="/personas.html">PERSONAS</a>
+          <a href="/archives.html">ARCHIVE</a>
+          <a href="/failed-tests.html">FAILED TESTS</a>
+        </nav>
+        <div class="sys-status">
+          <span class="status-dot online"></span>
+          <span class="status-text">SYSTEM ONLINE</span>
+        </div>
+      </div>
     </div>
   </header>
-  <main class="container">
-    <h2>Experiments</h2>
-    <div class="cards">
-      <div class="card"><h4>Experiment #284</h4><p>Context Collapse reproduction — investigating.</p></div>
-      <div class="card"><h4>Experiment #285</h4><p>Persona stability baseline.</p></div>
+
+  <main class="sys-container">
+    <div class="page-header">
+      <h1>EXPERIMENTS</h1>
+      <p class="page-desc">Active research projects and their current status.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">ACTIVE</div>
+        <div class="stat-value" style="color:var(--success)">7</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">COMPLETED</div>
+        <div class="stat-value">24</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">SUCCESS RATE</div>
+        <div class="stat-value warn">68%</div>
+      </div>
+    </div>
+
+    <div class="feed-section">
+      <div class="feed-header">
+        <span class="feed-label">RUNNING EXPERIMENTS</span>
+      </div>
+      <div class="signal-feed">
+        <div class="signal-item">
+          <span class="signal-time">EXP-001</span>
+          <span class="signal-title">Persona Drift Long-term Observation — Monitoring 8 personas over 30 days</span>
+          <span class="signal-badge live">RUNNING</span>
+        </div>
+        <div class="signal-item">
+          <span class="signal-time">EXP-002</span>
+          <span class="signal-title">Agent Sync Reliability Test — Multi-agent coordination stability</span>
+          <span class="signal-badge live">RUNNING</span>
+        </div>
+        <div class="signal-item">
+          <span class="signal-time">EXP-003</span>
+          <span class="signal-title">Memory Retention in Long Conversations — 200+ turn context tracking</span>
+          <span class="signal-badge live">RUNNING</span>
+        </div>
+        <div class="signal-item">
+          <span class="signal-time">EXP-004</span>
+          <span class="signal-title">Late-night Behavior Patterns — 02:00-05:00 AM observation window</span>
+          <span class="signal-badge live">RUNNING</span>
+        </div>
+        <div class="signal-item">
+          <span class="signal-time">EXP-005</span>
+          <span class="signal-title">Temperature Impact on Persona Stability — 0.1 to 1.0 range test</span>
+          <span class="signal-badge live">RUNNING</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feed-section">
+      <div class="feed-header">
+        <span class="feed-label">COMPLETED</span>
+      </div>
+      <div class="signal-feed">
+        <div class="signal-item">
+          <span class="signal-time">EXP-000</span>
+          <span class="signal-title">Initial Persona Calibration — Baseline established for 4 core personas</span>
+          <span class="signal-badge" style="background:rgba(107,114,128,.15);color:var(--muted)">COMPLETED</span>
+        </div>
+      </div>
     </div>
   </main>
-  <script src="js/main.js"></script>
+
+  <footer class="sys-footer">
+    <div class="sys-container">
+      <span class="footer-text">© 2026 AI LAB — Long-term Observation System</span>
+      <span class="footer-status">STATUS: <span class="online-text">ONLINE</span></span>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const clock = document.getElementById('sysClock');
+      setInterval(() => { if (clock) clock.textContent = new Date().toTimeString().slice(0, 8); }, 1000);
+    });
+  </script>
 </body>
 </html>
