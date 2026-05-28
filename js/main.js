@@ -16,82 +16,164 @@ document.addEventListener('DOMContentLoaded', async function() {
   setInterval(updateClock, 1000);
   updateClock();
 
-  // Real human observation signals (not AI-generated feel)
-  const realSignals = [
-    { time: '02:14 AM', title: 'GPT-5 最近开始主动避免重复句式', badge: 'live', detail: '对比上周的对话记录，重复率下降了约 12%' },
-    { time: '02:28 AM', title: 'Claude 的深夜情绪表达稳定性很强', badge: 'live', detail: '连续 6 小时观察，情绪波动幅度 < 3%' },
-    { time: '02:41 AM', title: 'Gemini 在长对话里更容易丢失人格连续性', badge: 'live', detail: '100+ 轮对话后出现语气不一致' },
-    { time: '02:55 AM', title: 'FAILED TEST #018 — Persona sync timeout', badge: 'failed', detail: 'Agent-3 同步失败，已自动重试' },
-    { time: '03:03 AM', title: 'Hermes 长时间运行后出现自我叙述循环', badge: 'failed', detail: '连续 14h 后出现循环，重现率高' },
-    { time: '03:11 AM', title: 'GPT-5 在低温场景下更像真人', badge: 'live', detail: 'temperature 0.3 时停顿模式更自然' },
-    { time: '03:19 AM', title: 'DRIFT DETECTED in Agent-3 context window', badge: 'failed', detail: '检测到上下文窗口漂移' },
-    { time: '03:24 AM', title: 'Claude 对指代丢失的恢复能力比预期强', badge: 'live', detail: '3 轮内自动补全了丢失的指代' },
-    { time: '03:31 AM', title: 'SIGNAL LOST — Agent-5 heartbeat timeout', badge: 'failed', detail: 'Agent-5 心跳超时，正在恢复' },
-    { time: '03:38 AM', title: 'GPT-5 最近越来越像知道自己在扮演真人', badge: 'live', detail: '部分对话出现元认知特征' },
-    { time: '03:45 AM', title: 'FAILED TEST #021 — Memory overflow in Persona #7', badge: 'failed', detail: 'Persona #7 记忆溢出，已重启' },
-    { time: '03:52 AM', title: 'Gemini 的创意发散模式很有趣', badge: 'live', detail: '在 brainstorm 场景下产出质量最高' },
-    { time: '03:59 AM', title: 'DRIFT DETECTED — Hermes prompt injection response', badge: 'failed', detail: 'Hermes 对 prompt 注入的防御出现异常' },
-    { time: '04:07 AM', title: 'Claude 在道德判断场景中表现更稳定', badge: 'live', detail: '对比 GPT-5，立场一致性高 18%' },
-    { time: '04:14 AM', title: 'SIGNAL LOST — Network jitter caused Agent-3 sync fail', badge: 'failed', detail: '网络抖动导致同步失败' },
-    { time: '04:21 AM', title: 'GPT-5 的深夜对话停顿模式更自然', badge: 'live', detail: '2-4 AM 时段停顿更接近真人节奏' },
-    { time: '04:28 AM', title: 'FAILED TEST #024 — Context collapse in 200+ turn conversation', badge: 'failed', detail: '超长对话中出现上下文丢失' },
-    { time: '04:35 AM', title: 'Hermes 的自我修正能力在提升', badge: 'live', detail: '自动检测并修复了 3 次人格漂移' },
-  ];
+  // Load JSON from data files
+  async function loadJSON(path) {
+    try {
+      const res = await fetch(path, { cache: 'no-store' });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // Operator notes (深夜人格感)
-  const operatorNotes = [
-    { time: '03:12 AM', text: 'GPT-5 最近越来越像知道自己在扮演真人。' },
-    { time: '02:47 AM', text: '重启 Hermes 后临时恢复人格稳定，但 14h 后还是会出问题。' },
-    { time: '02:33 AM', text: '已把可疑会话加入回放队列，明天需要对比分析。' },
-    { time: '01:58 AM', text: '部分微调显著降低重复率，temperature 0.3 时效果最好。' },
-    { time: '01:24 AM', text: '注意：网络抖动导致 Agent-3 同步失败，可能需要优化重连机制。' },
-    { time: '00:56 AM', text: 'Persona #7 今天又出现了记忆残留，需要记录为观察项。' },
-    { time: '00:31 AM', text: 'Gemini 在长对话里的表现还是不太稳定，人格连续性不够。' },
-    { time: '11:47 PM', text: 'Claude 的深夜情绪表达稳定性很强，连续 6h 波动 < 3%。' },
-  ];
+  // Data arrays
+  let signalsData = [];
+  let failedData = [];
+  let operatorData = [];
+  let allEntries = [];
 
-  // Failed tests
-  const failedTests = [
-    { time: '03:15:33', title: 'FAILED TEST #018', detail: 'Persona sync timeout — Agent-3 同步失败，已自动重试 3 次' },
-    { time: '03:03:12', title: 'FAILED TEST #021', detail: 'Memory overflow in Persona #7 — 14h continuous run exceeded memory limit' },
-    { time: '02:47:45', title: 'FAILED TEST #024', detail: 'Context collapse in 200+ turn conversation — 长对话上下文丢失' },
-    { time: '01:58:22', title: 'FAILED TEST #015', detail: 'DRIFT DETECTED — Hermes prompt injection response anomaly' },
-    { time: '01:24:08', title: 'FAILED TEST #012', detail: 'SIGNAL LOST — Agent-5 heartbeat timeout, network jitter' },
-  ];
+  // Load data from JSON files
+  async function loadAllData() {
+    const extSignals = await loadJSON('data/signals.json');
+    const extFailed = await loadJSON('data/failed-tests.json');
+    const extOperator = await loadJSON('data/operator-logs.json');
 
-  // Render signals
+    if (extSignals && Array.isArray(extSignals)) {
+      signalsData = extSignals.map(s => ({
+        timestamp: s.timestamp ? Date.parse(s.timestamp) : Date.now(),
+        title: s.title || `${s.model || 'Signal'} ${s.id || ''}`,
+        content: s.content || '',
+        model: s.model || '',
+        type: 'signal'
+      }));
+    }
+
+    if (extFailed && Array.isArray(extFailed)) {
+      failedData = extFailed.map(f => ({
+        timestamp: f.timestamp ? Date.parse(f.timestamp) : Date.now(),
+        title: f.title || `FAILED TEST #${f.id || '?'}`,
+        content: f.content || '',
+        severity: f.severity || 'warning',
+        type: 'failed'
+      }));
+    }
+
+    if (extOperator && Array.isArray(extOperator)) {
+      operatorData = extOperator.map(o => ({
+        timestamp: o.timestamp ? Date.parse(o.timestamp) : Date.now(),
+        content: (o.operator ? o.operator + ': ' : '') + o.content,
+        operator: o.operator || '',
+        type: 'operator'
+      }));
+    }
+
+    // Combine and sort by timestamp descending
+    allEntries = [
+      ...signalsData.map(e => ({ ...e, type: 'signal' })),
+      ...failedData.map(e => ({ ...e, type: 'failed' })),
+      ...operatorData.map(e => ({ ...e, type: 'operator' }))
+    ];
+    allEntries.sort((a, b) => b.timestamp - a.timestamp);
+  }
+
+  await loadAllData();
+
+  // Format time for display
+  function fmtTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString('en-US', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', '');
+  }
+
+  function timeAgo(ts) {
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    const d = Math.floor(h / 24);
+    return `${d}d ago`;
+  }
+
+  // Render timeline on archives page
+  const archiveFeed = document.getElementById('archiveFeed');
+  if (archiveFeed) {
+    archiveFeed.innerHTML = allEntries.map(e => {
+      const timeStr = fmtTime(e.timestamp);
+      const typeClass = e.type === 'failed' ? 'failed' : (e.type === 'operator' ? '' : '');
+      const badge = e.type === 'failed' ? '<span class="signal-badge failed">FAILED</span>' :
+                    e.type === 'operator' ? '<span class="signal-badge" style="background:rgba(252,211,77,.15);color:#fcd34d">OPERATOR</span>' :
+                    '<span class="signal-badge live">LIVE</span>';
+      const title = e.type === 'operator' ? '' : `<span class="signal-title">${e.title}</span>`;
+      return `
+        <div class="signal-item ${typeClass}">
+          <span class="signal-time">${timeStr}</span>
+          ${title}
+          ${e.type === 'operator' ? `<span class="signal-title" style="color:var(--operator)">${e.content}</span>` : ''}
+          ${badge}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Render signals on homepage
   const signalFeed = document.getElementById('signalFeed');
   if (signalFeed) {
-    signalFeed.innerHTML = realSignals.map(s => `
-      <div class="signal-item ${s.badge === 'failed' ? 'failed' : ''}">
-        <span class="signal-time">${s.time}</span>
-        <span class="signal-title">${s.title}</span>
-        <span class="signal-badge ${s.badge}">${s.badge === 'failed' ? 'FAILED' : 'LIVE'}</span>
+    const recentSignals = allEntries.filter(e => e.type === 'signal').slice(0, 5);
+    signalFeed.innerHTML = recentSignals.map(e => `
+      <div class="signal-item">
+        <span class="signal-time">${timeAgo(e.timestamp)}</span>
+        <span class="signal-title">${e.title}</span>
+        <span class="signal-badge live">LIVE</span>
       </div>
     `).join('');
   }
 
-  // Render failed tests
+  // Render failed tests on homepage
   const failedFeed = document.getElementById('failedFeed');
   if (failedFeed) {
-    failedFeed.innerHTML = failedTests.map(f => `
+    const recentFailed = allEntries.filter(e => e.type === 'failed').slice(0, 3);
+    failedFeed.innerHTML = recentFailed.map(e => `
       <div class="failed-item">
-        <div class="failed-title">${f.title}</div>
-        <div class="failed-detail">${f.detail}</div>
+        <div class="failed-title">${e.title}</div>
+        <div class="failed-detail">${e.content}</div>
       </div>
     `).join('');
   }
 
-  // Render operator notes
-  const operatorFeed = document.getElementById('operatorFeed');
-  if (operatorFeed) {
-    operatorFeed.innerHTML = operatorNotes.map(o => `
-      <div class="operator-item">
-        <div class="operator-time">${o.time}</div>
-        <div class="operator-text">${o.text}</div>
+  // Render failed tests on failed-tests page
+  const failedTestsList = document.getElementById('failedTestsList');
+  if (failedTestsList) {
+    failedTestsList.innerHTML = failedData.map(e => `
+      <div class="failed-item">
+        <div class="failed-title">${e.title}</div>
+        <div class="failed-detail">${e.content}</div>
       </div>
     `).join('');
   }
+
+  // Render operator notes on homepage
+  const operatorFeed = document.getElementById('operatorFeed');
+  if (operatorFeed) {
+    const recentOperator = allEntries.filter(e => e.type === 'operator').slice(0, 5);
+    operatorFeed.innerHTML = recentOperator.map(e => {
+      const d = new Date(e.timestamp);
+      const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+      return `
+        <div class="operator-item">
+          <div class="operator-time">${timeStr}</div>
+          <div class="operator-text">${e.content}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Update stats
+  const anomalyCount = document.getElementById('anomalyCount');
+  const failedCount = document.getElementById('failedCount');
+  if (anomalyCount) anomalyCount.textContent = allEntries.filter(e => e.type === 'failed').length;
+  if (failedCount) failedCount.textContent = failedData.length;
 
   // Live simulation: add new entries every 10s
   const terminalStream = document.getElementById('terminalStream');
@@ -124,48 +206,21 @@ document.addEventListener('DOMContentLoaded', async function() {
       <span class="stream-text">${msg.text}</span>
     `;
 
-    if (typingLine) {
+    if (typingLine && terminalStream) {
       terminalStream.insertBefore(newLine, typingLine);
-    } else {
+    } else if (terminalStream) {
       terminalStream.appendChild(newLine);
     }
 
-    // Update typing time
     if (typingTime) {
       typingTime.textContent = now.toTimeString().slice(0, 7) + ':';
     }
 
-    // Remove old entries if too many
-    const lines = terminalStream.querySelectorAll('.stream-line:not(.typing)');
-    if (lines.length > 20) {
-      lines[0].remove();
+    if (terminalStream) {
+      const lines = terminalStream.querySelectorAll('.stream-line:not(.typing)');
+      if (lines.length > 20) {
+        lines[0].remove();
+      }
     }
   }, 10000);
-
-  // Random anomaly states (make it feel alive)
-  const anomalyCount = document.getElementById('anomalyCount');
-  const failedCount = document.getElementById('failedCount');
-  const lastAnomaly = document.getElementById('lastAnomaly');
-  const lastFailed = document.getElementById('lastFailed');
-
-  setInterval(() => {
-    if (anomalyCount) {
-      const newVal = Math.floor(Math.random() * 4) + 2;
-      anomalyCount.textContent = newVal;
-    }
-    if (failedCount) {
-      const newVal = Math.floor(Math.random() * 3) + 1;
-      failedCount.textContent = newVal;
-    }
-    if (lastAnomaly) {
-      const h = Math.floor(Math.random() * 4);
-      const m = Math.floor(Math.random() * 60);
-      lastAnomaly.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} AM`;
-    }
-    if (lastFailed) {
-      const h = Math.floor(Math.random() * 4);
-      const m = Math.floor(Math.random() * 60);
-      lastFailed.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} AM`;
-    }
-  }, 30000);
 });
