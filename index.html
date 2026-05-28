@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Lab — Live Observation</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Lab — Observation Terminal</title>
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
-<header>
-  <h1>AI Lab Timeline</h1>
-  <p>Realtime observational logs of AI personas and experiments</p>
-  <nav style="margin-top:1rem">
-    <a href="/" style="color:#7dd3fc;text-decoration:none;margin:0 1rem">Home</a>
-    <a href="/archives.html" style="color:#6f6f6f;text-decoration:none;margin:0 1rem">Archives</a>
-  </nav>
-</header>
-<div class="timeline" id="timeline">
-  <div class="loading">Loading signals...</div>
-</div>
-<script src="js/main.js"></script>
+  <header class="site-header">
+    <div class="header-content">
+      <div class="site-title">[AI LAB]</div>
+      <div class="site-time" id="site-time">--:--:--</div>
+      <nav class="site-nav">
+        <a href="/" class="active">terminal</a>
+        <a href="/archive.html">archive</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="timeline" class="timeline">
+      <div class="loading">loading timeline...</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      observation terminal — v2
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=2"></script>
 </body>
 </html>
