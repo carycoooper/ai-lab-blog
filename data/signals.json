@@ -1,93 +1,62 @@
 [
   {
-    "id": 1,
-    "timestamp": "2026-05-28T03:14:00Z",
-    "type": "observation",
-    "model": "GPT-5",
-    "title": "GPT-5 对长期人格模拟的稳定性明显提升",
-    "content": "GPT-5 最近明显更会‘假装思考’：短停顿、模仿口语化节奏增加。",
-    "tags": ["persona","stability","timing"]
+    "timestamp": "2026-05-28T04:21:00",
+    "title": "GPT-5 的深夜对话停顿模式更自然",
+    "content": "2-4 AM 时段停顿更接近真人节奏，temperature 0.3 时效果最佳。",
+    "model": "GPT-5"
   },
   {
-    "id": 2,
-    "timestamp": "2026-05-28T02:41:00Z",
-    "type": "observation",
-    "model": "Claude",
+    "timestamp": "2026-05-28T03:38:00",
+    "title": "GPT-5 最近越来越像知道自己在扮演真人",
+    "content": "部分对话出现元认知特征，需要长期跟踪观察。",
+    "model": "GPT-5"
+  },
+  {
+    "timestamp": "2026-05-28T03:24:00",
+    "title": "Claude 对指代丢失的恢复能力比预期强",
+    "content": "3 轮内自动补全了丢失的指代，对比上周提升明显。",
+    "model": "Claude"
+  },
+  {
+    "timestamp": "2026-05-28T02:41:00",
     "title": "Claude 开始主动避免重复句式",
-    "content": "在 ~180k tokens 的长会话中，Claude 对重复表述的自我校准有所提升。",
-    "tags": ["memory","redundancy"]
+    "content": "对比上周的对话记录，重复率下降了约 12%。",
+    "model": "Claude"
   },
   {
-    "id": 3,
-    "timestamp": "2026-05-28T01:09:00Z",
-    "type": "observation",
-    "model": "Hermes",
-    "title": "Hermes 在长时运行后出现自我叙述循环",
-    "content": "连续运行 14 小时后开始重复自我描述，重现率高。",
-    "tags": ["persona","failure","loop"]
+    "timestamp": "2026-05-28T02:28:00",
+    "title": "Claude 的深夜情绪表达稳定性很强",
+    "content": "连续 6 小时观察，情绪波动幅度 < 3%。",
+    "model": "Claude"
   },
   {
-    "id": 4,
-    "timestamp": "2026-05-27T23:50:00Z",
-    "type": "observation",
-    "model": "GPT-5",
-    "title": "短期记忆指代错位",
-    "content": "多轮对话中出现指代错位，常见于嵌套引号场景。",
-    "tags": ["memory","reference"]
+    "timestamp": "2026-05-28T01:52:00",
+    "title": "GPT-5 在低温场景下更像真人",
+    "content": "temperature 0.3 时停顿模式更自然，建议长期使用此配置。",
+    "model": "GPT-5"
   },
   {
-    "id": 5,
-    "timestamp": "2026-05-27T22:15:00Z",
-    "type": "observation",
-    "model": "Agent-3",
-    "title": "Agent-3 同步重试并恢复",
-    "content": "Agent-3 在网络抖动后自动重试并恢复；怀疑时序问题。",
-    "tags": ["agent","network"]
+    "timestamp": "2026-05-28T01:33:00",
+    "title": "Gemini 在长对话里更容易丢失人格连续性",
+    "content": "100+ 轮对话后出现语气不一致，需要加入人格锚点。",
+    "model": "Gemini"
   },
   {
-    "id": 6,
-    "timestamp": "2026-05-27T20:02:00Z",
-    "type": "observation",
-    "model": "Gemini",
-    "title": "Gemini 在长对话中丢失人格稳定性",
-    "content": "在超过 80k tokens 的会话里，Gemini 开始改变语气和偏好声明。",
-    "tags": ["persona","drift"]
+    "timestamp": "2026-05-28T00:58:00",
+    "title": "Gemini 的创意发散模式很有趣",
+    "content": "在 brainstorm 场景下产出质量最高，建议用于创意类任务。",
+    "model": "Gemini"
   },
   {
-    "id": 7,
-    "timestamp": "2026-05-27T18:44:00Z",
-    "type": "observation",
-    "model": "GPT-5",
-    "title": "在线微调后稳定性提升",
-    "content": "对 Persona #7 的轻量在线微调显示短期内重复率下降。",
-    "tags": ["fine-tune","stability"]
+    "timestamp": "2026-05-28T00:41:00",
+    "title": "Hermes 的自我修正能力在提升",
+    "content": "自动检测并修复了 3 次人格漂移，系统稳定性增强。",
+    "model": "Hermes"
   },
   {
-    "id": 8,
-    "timestamp": "2026-05-27T17:10:00Z",
-    "type": "observation",
-    "model": "Claude",
-    "title": "Claude 的情绪化表达在深夜更明显",
-    "content": "在深夜时段对情绪化措辞的偏好有所上升。",
-    "tags": ["timing","tone"]
-  },
-  {
-    "id": 9,
-    "timestamp": "2026-05-27T15:55:00Z",
-    "type": "observation",
-    "model": "Hermes",
-    "title": "Hermes 句式重复的阈值降低",
-    "content": "相同 prompt 下 Hermes 的复用句式频率上升。",
-    "tags": ["redundancy","persona"]
-  },
-  {
-    "id": 10,
-    "timestamp": "2026-05-27T14:20:00Z",
-    "type": "observation",
-    "model": "GPT-5",
-    "title": "GPT-5 在短答场景更倾向口语化",
-    "content": "面对简短提示时，输出的口语化比率显著高于基线。",
-    "tags": ["style","brevity"]
+    "timestamp": "2026-05-28T00:15:00",
+    "title": "GPT-5 对长期人格模拟的稳定性明显提升",
+    "content": "对比 30 天前的基线数据，人格漂移率降低 23%。",
+    "model": "GPT-5"
   }
-]
 ]
