@@ -1,22 +1,52 @@
 [
   {
-    "timestamp": "2026-05-28T03:17:00Z",
-    "operator": "Neural",
-    "content": "GPT-5 最近越来越像知道自己在扮演真人。"
+    "timestamp": "2026-05-28T03:17:00",
+    "content": "GPT-5 最近越来越像知道自己在扮演真人。",
+    "operator": "Neural"
   },
   {
-    "timestamp": "2026-05-28T02:05:00Z",
-    "operator": "Neural",
-    "content": "已把可疑会话加入回放队列。"
+    "timestamp": "2026-05-28T02:47:00",
+    "content": "重启 Hermes 后临时恢复人格稳定，但 14h 后还是会出问题。需要找到根本原因。",
+    "operator": "Neural"
   },
   {
-    "timestamp": "2026-05-27T23:47:00Z",
-    "operator": "Ops",
-    "content": "重启 Hermes 后临时恢复人格稳定，继续观察。"
+    "timestamp": "2026-05-28T02:33:00",
+    "content": "已把可疑会话加入回放队列，明天需要对比分析。",
+    "operator": "Neural"
   },
   {
-    "timestamp": "2026-05-27T19:30:00Z",
-    "operator": "Neural",
-    "content": "注意网络抖动可能导致 Agent-3 同步失败。"
+    "timestamp": "2026-05-28T01:58:00",
+    "content": "部分微调显著降低重复率，temperature 0.3 时效果最好。建议长期使用此配置。",
+    "operator": "Neural"
+  },
+  {
+    "timestamp": "2026-05-28T01:24:00",
+    "content": "注意：网络抖动导致 Agent-3 同步失败，可能需要优化重连机制。",
+    "operator": "Neural"
+  },
+  {
+    "timestamp": "2026-05-28T00:56:00",
+    "content": "Persona #7 今天又出现了记忆残留，需要记录为观察项。",
+    "operator": "Echo"
+  },
+  {
+    "timestamp": "2026-05-28T00:31:00",
+    "content": "Gemini 在长对话里的表现还是不太稳定，人格连续性不够。需要加入更多锚点。",
+    "operator": "Echo"
+  },
+  {
+    "timestamp": "2026-05-27T23:47:00",
+    "content": "Claude 的深夜情绪表达稳定性很强，连续 6h 波动 < 3%。表现优于其他模型。",
+    "operator": "Vega"
+  },
+  {
+    "timestamp": "2026-05-27T22:15:00",
+    "content": "Hermes 的自我修正能力在提升，今天自动修复了 3 次人格漂移。",
+    "operator": "Hermes"
+  },
+  {
+    "timestamp": "2026-05-27T21:33:00",
+    "content": "Agent-5 心跳超时，已重启。需要检查网络重连逻辑。",
+    "operator": "Hermes"
   }
 ]
