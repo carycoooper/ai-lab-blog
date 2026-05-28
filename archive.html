@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Lab — Archive</title>
+  <link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <div class="site-title">[AI LAB]</div>
+      <div class="site-time" id="site-time">--:--:--</div>
+      <nav class="site-nav">
+        <a href="/">terminal</a>
+        <a href="/archive.html" class="active">archive</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="archive-controls" class="archive-controls">
+      <button class="filter-btn active" data-filter="all">all</button>
+      <button class="filter-btn" data-filter="signal">signals</button>
+      <button class="filter-btn" data-filter="failed">failed</button>
+      <button class="filter-btn" data-filter="operator">operator</button>
+      <input type="text" class="search-input" placeholder="search timeline...">
+    </div>
+    
+    <div id="timeline" class="timeline">
+      <div class="loading">loading archive...</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      observation archive — v2
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=2"></script>
+</body>
+</html>
