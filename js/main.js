@@ -1,240 +1,171 @@
-document.addEventListener('DOMContentLoaded',async function(){
-  // Core data
-  const feed = document.getElementById('signalFeed') || document.getElementById('signalList');
-  const mainTitle = document.getElementById('mainSignalTitle');
-  const mainTime = document.getElementById('mainSignalTime');
-  const mainNote = document.getElementById('mainSignalNote');
-  const mainDetail = document.getElementById('mainSignalDetail');
-  const failedSummary = document.getElementById('failedSummary');
-  const operatorLast = document.getElementById('operatorLastTime');
+document.addEventListener('DOMContentLoaded', async function() {
+  // System clock
+  const clock = document.getElementById('sysClock');
+  const uptime = document.getElementById('uptime');
+  const startTime = Date.now() - 1000 * 60 * 60 * 27 * 3; // 27.5 days uptime
 
-  const now = Date.now();
-    // 生成长期时间流：100 条信号（包含失败日志的若干条），风格为短碎片观测
-    function randInt(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
-    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-    const signalSeeds = [
-      '在长上下文中出现重复表述',
-      '模仿真人停顿更自然',
-      '情绪表达出现微弱放大',
-      '对话指代出现丢失',
-      '人格语气轻微漂移',
-      '在线微调后稳定性提升',
-      '在低温可用场景表现欠佳',
-      '对连续多轮用户输入响应变慢',
-      '短期记忆丢失（指代错位）',
-      '生成中出现事实性错误率升高'
-    ];
-
-    const agentNames = ['Hermes','Athena','Claude','Gemini','GPT-5','Orion','Agent-3'];
-    const signalTypes = ['signal','signal','signal','failed']; // 加一点失败概率
-
-    function genTitle(i, kind) {
-      if (kind === 'failed') return `FAILED TEST #${String(1000 + i).slice(1)}`;
-      return `NEURAL SIGNAL #${String(100 + i)}`;
-    }
-
-    function genDetail(seed, name) {
-      const extras = [
-        '已记录为观察项，需 48 小时回放验证。',
-        '怀疑与长上下文触发器有关，已加入复盘队列。',
-        '优先级：中。可能与 prompt 长度、token 分割策略相关。',
-        '建议：采集 10 次复现样本，使用统一 prompt 模板重放。',
-        '可能由内存漂移导致，计划重启并对比。'
-      ];
-      return `${name} — ${seed} ${pick(extras)}`;
-    }
-
-    function generateSignals(n) {
-      const out = [];
-      for (let i = 0; i < n; i++) {
-        // 时间分布：过去 180 天内，偏向最近
-        const daysAgo = Math.pow(Math.random(), 1.2) * 180;
-        const ts = now - Math.floor(daysAgo * 24 * 60 * 60 * 1000) - randInt(0, 24*60*60*1000);
-        const kind = pick(signalTypes);
-        const agent = pick(agentNames);
-        const seed = pick(signalSeeds);
-        const title = genTitle(i, kind);
-        const note = `${agent} ${seed.split(' ')[0]}`;
-        const detail = genDetail(seed, agent);
-        out.push({ts, title, note, detail, type: kind});
-      }
-      // 确保近期有若干明显条目
-      out.push({ts: now - 1000*60*60*2, title: 'NEURAL SIGNAL #RECENT', note: 'GPT-5 最近更会模仿真人停顿。', detail: '短观察：部分对话在停顿时更自然，需长期跟踪。', type: 'signal'});
-      out.push({ts: now - 1000*60*10, title: 'FAILED TEST #RECENT', note: 'Hermes 长时间运行后出现自我叙述循环。', detail: '连续运行 14 小时后出现循环，重现率高。', type: 'failed'});
-      // 排序：最新在前
-      out.sort((a,b) => b.ts - a.ts);
-      return out;
-    }
-
-    const sampleSignals = generateSignals(100);
-
-    // 提取失败日志和 Operator 日志样本
-    const failedLogs = sampleSignals.filter(s => s.type === 'failed').slice(0, 30);
-
-    // 生成简短的 Operator 日志（用于 operator 面板）
-    const operatorNotes = [
-      '03:12 AM — 观察：GPT-5 最近越来越像知道自己在扮演真人。',
-      '11:47 PM — 重启 Hermes 后临时恢复人格稳定。',
-      '02:05 AM — 已把可疑会话加入回放队列。',
-      '07:30 AM — 部分微调显著降低重复率。',
-      '04:20 PM — 注意：网络抖动导致 Agent-3 同步失败。'
-    ];
-
-    const operatorLogs = operatorNotes.map((t,i)=>({ts: now - i*1000*60*60, text: t}));
-
-    // 尝试从 data/*.json 加载外部数据（覆盖内置生成器），便于后续维护
-    async function loadJSON(path){
-      try{
-        const res = await fetch(path, {cache: 'no-store'});
-        if(!res.ok) return null;
-        return await res.json();
-      }catch(e){
-        return null;
-      }
-    }
-
-    async function tryLoadData(){
-      const extSignals = await loadJSON('data/signals.json');
-      if(extSignals && Array.isArray(extSignals) && extSignals.length){
-        // map to internal sampleSignals structure
-        const mapped = extSignals.map(s=>({
-          ts: s.timestamp ? Date.parse(s.timestamp) : Date.now(),
-          title: s.title || (s.model?`${s.model} ${s.id || ''}`:'Signal'),
-          note: s.model || '',
-          detail: s.content || '',
-          type: (s.type==='failed' || s.status==='failed')? 'failed' : (s.type || 'signal')
-        }));
-        // sort newest first
-        mapped.sort((a,b)=>b.ts-a.ts);
-        sampleSignals.splice(0, sampleSignals.length, ...mapped);
-      }
-
-      const extFailed = await loadJSON('data/failed-tests.json');
-      if(extFailed && Array.isArray(extFailed)){
-        // provide failedLogs for pages that use it
-        failedLogs.splice(0, failedLogs.length, ...extFailed.map(f=>({
-          ts: f.timestamp ? Date.parse(f.timestamp) : Date.now(),
-          title: f.title || (`FAILED TEST #${f.id||'?'}`),
-          note: f.model || '',
-          detail: f.content || '',
-          severity: f.severity || 'warning'
-        })));
-      }
-
-      const extOp = await loadJSON('data/operator-logs.json');
-      if(extOp && Array.isArray(extOp)){
-        operatorLogs.splice(0, operatorLogs.length, ...extOp.map(o=>({ts: o.timestamp?Date.parse(o.timestamp):Date.now(), text: (o.operator?o.operator+': ':'')+o.content})));
-      }
-    }
-
-  let operatorState = {name:'Neural', state:'ONLINE', focus:['Persona Drift','Agent Memory'], lastActive:Date.now()-1000*60*5};
-
-  function fmtTime(ts){
-    const d = new Date(ts);
-    return d.toISOString().replace('T',' ').slice(0,19);
-  }
-
-  function renderMain(){
-    const primary = sampleSignals.find(s=>s.type==='signal') || sampleSignals[0];
-    if(primary){
-      if(mainTitle) mainTitle.textContent = primary.title;
-      if(mainTime) mainTime.textContent = fmtTime(primary.ts);
-      if(mainNote) mainNote.textContent = primary.note;
-      if(mainDetail) mainDetail.textContent = primary.detail;
+  function updateClock() {
+    const now = new Date();
+    if (clock) clock.textContent = now.toTimeString().slice(0, 8);
+    if (uptime) {
+      const hours = Math.floor((Date.now() - startTime) / (1000 * 60 * 60));
+      const days = Math.floor(hours / 24);
+      uptime.textContent = `UPTIME: ${days}d ${hours % 24}h`;
     }
   }
+  setInterval(updateClock, 1000);
+  updateClock();
 
-  function renderFeed(){
-    if(!feed) return;
-    // incremental render for long timelines
-    const pageSize = 50;
-    let rendered = feed.getAttribute('data-rendered')|0;
-    if(!rendered) rendered = 0;
-    const slice = sampleSignals.slice(rendered, rendered + pageSize);
-    const html = slice.map(s=>{
-      const rel = timeAgo(s.ts);
-      const badge = s.type==='failed' ? '<span class="badge warn">FAILED</span>' : '<span class="badge ok">LIVE</span>';
-      return `<div class="signal ${s.type==='failed'?'failed':''}">`+
-        `<div class="meta">${fmtTimeShort(s.ts)} · ${s.title} ${badge}</div>`+
-        `<div class="txt">${escapeHtml(s.detail || s.content || '')}</div>`+
-        `<div class="muted">${rel}</div>`+
-        `</div>`;
-    }).join('');
-    feed.insertAdjacentHTML('beforeend', html);
-    rendered += slice.length;
-    feed.setAttribute('data-rendered', rendered);
-    // attach infinite scroll
-    if(rendered < sampleSignals.length){
-      if(!window._signalScrollAttached){
-        window._signalScrollAttached = true;
-        window.addEventListener('scroll', ()=>{
-          if((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 400)){
-            renderFeed();
-          }
-        });
-      }
-    }
+  // Real human observation signals (not AI-generated feel)
+  const realSignals = [
+    { time: '02:14 AM', title: 'GPT-5 最近开始主动避免重复句式', badge: 'live', detail: '对比上周的对话记录，重复率下降了约 12%' },
+    { time: '02:28 AM', title: 'Claude 的深夜情绪表达稳定性很强', badge: 'live', detail: '连续 6 小时观察，情绪波动幅度 < 3%' },
+    { time: '02:41 AM', title: 'Gemini 在长对话里更容易丢失人格连续性', badge: 'live', detail: '100+ 轮对话后出现语气不一致' },
+    { time: '02:55 AM', title: 'FAILED TEST #018 — Persona sync timeout', badge: 'failed', detail: 'Agent-3 同步失败，已自动重试' },
+    { time: '03:03 AM', title: 'Hermes 长时间运行后出现自我叙述循环', badge: 'failed', detail: '连续 14h 后出现循环，重现率高' },
+    { time: '03:11 AM', title: 'GPT-5 在低温场景下更像真人', badge: 'live', detail: 'temperature 0.3 时停顿模式更自然' },
+    { time: '03:19 AM', title: 'DRIFT DETECTED in Agent-3 context window', badge: 'failed', detail: '检测到上下文窗口漂移' },
+    { time: '03:24 AM', title: 'Claude 对指代丢失的恢复能力比预期强', badge: 'live', detail: '3 轮内自动补全了丢失的指代' },
+    { time: '03:31 AM', title: 'SIGNAL LOST — Agent-5 heartbeat timeout', badge: 'failed', detail: 'Agent-5 心跳超时，正在恢复' },
+    { time: '03:38 AM', title: 'GPT-5 最近越来越像知道自己在扮演真人', badge: 'live', detail: '部分对话出现元认知特征' },
+    { time: '03:45 AM', title: 'FAILED TEST #021 — Memory overflow in Persona #7', badge: 'failed', detail: 'Persona #7 记忆溢出，已重启' },
+    { time: '03:52 AM', title: 'Gemini 的创意发散模式很有趣', badge: 'live', detail: '在 brainstorm 场景下产出质量最高' },
+    { time: '03:59 AM', title: 'DRIFT DETECTED — Hermes prompt injection response', badge: 'failed', detail: 'Hermes 对 prompt 注入的防御出现异常' },
+    { time: '04:07 AM', title: 'Claude 在道德判断场景中表现更稳定', badge: 'live', detail: '对比 GPT-5，立场一致性高 18%' },
+    { time: '04:14 AM', title: 'SIGNAL LOST — Network jitter caused Agent-3 sync fail', badge: 'failed', detail: '网络抖动导致同步失败' },
+    { time: '04:21 AM', title: 'GPT-5 的深夜对话停顿模式更自然', badge: 'live', detail: '2-4 AM 时段停顿更接近真人节奏' },
+    { time: '04:28 AM', title: 'FAILED TEST #024 — Context collapse in 200+ turn conversation', badge: 'failed', detail: '超长对话中出现上下文丢失' },
+    { time: '04:35 AM', title: 'Hermes 的自我修正能力在提升', badge: 'live', detail: '自动检测并修复了 3 次人格漂移' },
+  ];
+
+  // Operator notes (深夜人格感)
+  const operatorNotes = [
+    { time: '03:12 AM', text: 'GPT-5 最近越来越像知道自己在扮演真人。' },
+    { time: '02:47 AM', text: '重启 Hermes 后临时恢复人格稳定，但 14h 后还是会出问题。' },
+    { time: '02:33 AM', text: '已把可疑会话加入回放队列，明天需要对比分析。' },
+    { time: '01:58 AM', text: '部分微调显著降低重复率，temperature 0.3 时效果最好。' },
+    { time: '01:24 AM', text: '注意：网络抖动导致 Agent-3 同步失败，可能需要优化重连机制。' },
+    { time: '00:56 AM', text: 'Persona #7 今天又出现了记忆残留，需要记录为观察项。' },
+    { time: '00:31 AM', text: 'Gemini 在长对话里的表现还是不太稳定，人格连续性不够。' },
+    { time: '11:47 PM', text: 'Claude 的深夜情绪表达稳定性很强，连续 6h 波动 < 3%。' },
+  ];
+
+  // Failed tests
+  const failedTests = [
+    { time: '03:15:33', title: 'FAILED TEST #018', detail: 'Persona sync timeout — Agent-3 同步失败，已自动重试 3 次' },
+    { time: '03:03:12', title: 'FAILED TEST #021', detail: 'Memory overflow in Persona #7 — 14h continuous run exceeded memory limit' },
+    { time: '02:47:45', title: 'FAILED TEST #024', detail: 'Context collapse in 200+ turn conversation — 长对话上下文丢失' },
+    { time: '01:58:22', title: 'FAILED TEST #015', detail: 'DRIFT DETECTED — Hermes prompt injection response anomaly' },
+    { time: '01:24:08', title: 'FAILED TEST #012', detail: 'SIGNAL LOST — Agent-5 heartbeat timeout, network jitter' },
+  ];
+
+  // Render signals
+  const signalFeed = document.getElementById('signalFeed');
+  if (signalFeed) {
+    signalFeed.innerHTML = realSignals.map(s => `
+      <div class="signal-item ${s.badge === 'failed' ? 'failed' : ''}">
+        <span class="signal-time">${s.time}</span>
+        <span class="signal-title">${s.title}</span>
+        <span class="signal-badge ${s.badge}">${s.badge === 'failed' ? 'FAILED' : 'LIVE'}</span>
+      </div>
+    `).join('');
   }
 
-  function fmtTimeShort(ts){
-    const d = new Date(ts);
-    return d.toLocaleString();
+  // Render failed tests
+  const failedFeed = document.getElementById('failedFeed');
+  if (failedFeed) {
+    failedFeed.innerHTML = failedTests.map(f => `
+      <div class="failed-item">
+        <div class="failed-title">${f.title}</div>
+        <div class="failed-detail">${f.detail}</div>
+      </div>
+    `).join('');
   }
 
-  function timeAgo(ts){
-    const s = Math.floor((Date.now() - ts)/1000);
-    if(s < 60) return `${s}s ago`;
-    const m = Math.floor(s/60);
-    if(m < 60) return `${m}m ago`;
-    const h = Math.floor(m/60);
-    if(h < 24) return `${h}h ago`;
-    const d = Math.floor(h/24);
-    return `${d}d ago`;
+  // Render operator notes
+  const operatorFeed = document.getElementById('operatorFeed');
+  if (operatorFeed) {
+    operatorFeed.innerHTML = operatorNotes.map(o => `
+      <div class="operator-item">
+        <div class="operator-time">${o.time}</div>
+        <div class="operator-text">${o.text}</div>
+      </div>
+    `).join('');
   }
 
-  function escapeHtml(str){
-    return String(str).replace(/[&<>\"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; });
-  }
+  // Live simulation: add new entries every 10s
+  const terminalStream = document.getElementById('terminalStream');
+  const typingLine = document.getElementById('typingLine');
+  const typingTime = document.getElementById('typingTime');
 
-  function renderFailedSummary(){
-    const container = failedSummary || document.getElementById('failedLogs');
-    if(!container) return;
-    const failed = (failedLogs && failedLogs.length)? failedLogs : sampleSignals.filter(s=>s.type==='failed');
-    container.innerHTML = failed.map(f=>`<div class="failed-log"><div class="meta">${fmtTime(f.ts)} · ${escapeHtml(f.title)} ${f.severity?'<span class="badge warn">'+f.severity+'</span>':''}</div><pre>${escapeHtml(f.detail || f.content || '')}</pre></div>`).join('');
-  }
+  const liveMessages = [
+    { tag: '[SIGNAL]', text: 'GPT-5 停顿模式更自然', type: 'signal' },
+    { tag: '[ANOMALY]', text: 'Memory drift in Persona #7', type: 'anomaly' },
+    { tag: '[SYSTEM]', text: 'Memory re-calibration complete', type: 'system' },
+    { tag: '[WARNING]', text: 'DRIFT DETECTED in context window', type: 'warning' },
+    { tag: '[OPERATOR]', text: '已记录为观察项', type: 'operator' },
+    { tag: '[FAILED]', text: 'FAILED TEST — Persona sync timeout', type: 'failed' },
+    { tag: '[SIGNAL]', text: 'Claude 情绪表达稳定性强', type: 'signal' },
+    { tag: '[SYSTEM]', text: 'Agent-3 restored', type: 'system' },
+    { tag: '[WARNING]', text: 'SIGNAL LOST — heartbeat timeout', type: 'warning' },
+    { tag: '[ANOMALY]', text: 'Context collapse detected', type: 'anomaly' },
+  ];
 
-  function renderOperator(){
-    if(operatorLast) operatorLast.textContent = fmtTime(operatorState.lastActive);
-    const opName = document.getElementById('operatorName');
-    const opNamePanel = document.getElementById('operatorNamePanel');
-    const opState = document.getElementById('operatorState');
-    const opFocus = document.getElementById('operatorFocus');
-    if(opName) opName.textContent = operatorState.name;
-    if(opNamePanel) opNamePanel.textContent = operatorState.name;
-    if(opState) opState.textContent = operatorState.state;
-    if(opFocus) opFocus.textContent = 'Focus: ' + operatorState.focus.join(' · ');
-  }
+  setInterval(() => {
+    const now = new Date();
+    const timeStr = now.toTimeString().slice(0, 8);
+    const msg = liveMessages[Math.floor(Math.random() * liveMessages.length)];
 
-  // Initial render
-  await tryLoadData();
-  renderMain();
-  renderFeed();
-  renderFailedSummary();
-  renderOperator();
+    const newLine = document.createElement('div');
+    newLine.className = `stream-line ${msg.type}`;
+    newLine.innerHTML = `
+      <span class="stream-time">${timeStr}</span>
+      <span class="stream-tag">${msg.tag}</span>
+      <span class="stream-text">${msg.text}</span>
+    `;
 
-  // Live simulation: add a new random small observation every 10s
-  setInterval(()=>{
-    const now = Date.now();
-    const seed = Math.random();
-    if(seed>0.85){
-      // failed event
-      sampleSignals.unshift({ts:now, title:'FAILED TEST #'+(100+Math.floor(Math.random()*900)), note:'自动检测到异常', detail:'实验运行异常样本：出现内存溢出或人格漂移。', type:'failed'});
+    if (typingLine) {
+      terminalStream.insertBefore(newLine, typingLine);
     } else {
-      sampleSignals.unshift({ts:now, title:'NEURAL SIGNAL', note:'自动观测', detail:'短期观测：检测到微小漂移。', type:'signal'});
+      terminalStream.appendChild(newLine);
     }
-    sampleSignals.splice(10);
-    operatorState.lastActive = now;
-    renderMain(); renderFeed(); renderFailedSummary(); renderOperator();
-  },10000);
+
+    // Update typing time
+    if (typingTime) {
+      typingTime.textContent = now.toTimeString().slice(0, 7) + ':';
+    }
+
+    // Remove old entries if too many
+    const lines = terminalStream.querySelectorAll('.stream-line:not(.typing)');
+    if (lines.length > 20) {
+      lines[0].remove();
+    }
+  }, 10000);
+
+  // Random anomaly states (make it feel alive)
+  const anomalyCount = document.getElementById('anomalyCount');
+  const failedCount = document.getElementById('failedCount');
+  const lastAnomaly = document.getElementById('lastAnomaly');
+  const lastFailed = document.getElementById('lastFailed');
+
+  setInterval(() => {
+    if (anomalyCount) {
+      const newVal = Math.floor(Math.random() * 4) + 2;
+      anomalyCount.textContent = newVal;
+    }
+    if (failedCount) {
+      const newVal = Math.floor(Math.random() * 3) + 1;
+      failedCount.textContent = newVal;
+    }
+    if (lastAnomaly) {
+      const h = Math.floor(Math.random() * 4);
+      const m = Math.floor(Math.random() * 60);
+      lastAnomaly.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} AM`;
+    }
+    if (lastFailed) {
+      const h = Math.floor(Math.random() * 4);
+      const m = Math.floor(Math.random() * 60);
+      lastFailed.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} AM`;
+    }
+  }, 30000);
 });
