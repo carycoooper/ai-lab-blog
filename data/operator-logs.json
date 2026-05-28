@@ -1,0 +1,22 @@
+[
+  {
+    "timestamp": "2026-05-28T03:17:00Z",
+    "operator": "Neural",
+    "content": "GPT-5 最近越来越像知道自己在扮演真人。"
+  },
+  {
+    "timestamp": "2026-05-28T02:05:00Z",
+    "operator": "Neural",
+    "content": "已把可疑会话加入回放队列。"
+  },
+  {
+    "timestamp": "2026-05-27T23:47:00Z",
+    "operator": "Ops",
+    "content": "重启 Hermes 后临时恢复人格稳定，继续观察。"
+  },
+  {
+    "timestamp": "2026-05-27T19:30:00Z",
+    "operator": "Neural",
+    "content": "注意网络抖动可能导致 Agent-3 同步失败。"
+  }
+]

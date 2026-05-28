@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded',async function(){
   // Core data
   const feed = document.getElementById('signalFeed') || document.getElementById('signalList');
   const mainTitle = document.getElementById('mainSignalTitle');
@@ -83,6 +83,51 @@ document.addEventListener('DOMContentLoaded',function(){
 
     const operatorLogs = operatorNotes.map((t,i)=>({ts: now - i*1000*60*60, text: t}));
 
+    // 尝试从 data/*.json 加载外部数据（覆盖内置生成器），便于后续维护
+    async function loadJSON(path){
+      try{
+        const res = await fetch(path, {cache: 'no-store'});
+        if(!res.ok) return null;
+        return await res.json();
+      }catch(e){
+        return null;
+      }
+    }
+
+    async function tryLoadData(){
+      const extSignals = await loadJSON('data/signals.json');
+      if(extSignals && Array.isArray(extSignals) && extSignals.length){
+        // map to internal sampleSignals structure
+        const mapped = extSignals.map(s=>({
+          ts: s.timestamp ? Date.parse(s.timestamp) : Date.now(),
+          title: s.title || (s.model?`${s.model} ${s.id || ''}`:'Signal'),
+          note: s.model || '',
+          detail: s.content || '',
+          type: (s.type==='failed' || s.status==='failed')? 'failed' : (s.type || 'signal')
+        }));
+        // sort newest first
+        mapped.sort((a,b)=>b.ts-a.ts);
+        sampleSignals.splice(0, sampleSignals.length, ...mapped);
+      }
+
+      const extFailed = await loadJSON('data/failed-tests.json');
+      if(extFailed && Array.isArray(extFailed)){
+        // provide failedLogs for pages that use it
+        failedLogs.splice(0, failedLogs.length, ...extFailed.map(f=>({
+          ts: f.timestamp ? Date.parse(f.timestamp) : Date.now(),
+          title: f.title || (`FAILED TEST #${f.id||'?'}`),
+          note: f.model || '',
+          detail: f.content || '',
+          severity: f.severity || 'warning'
+        })));
+      }
+
+      const extOp = await loadJSON('data/operator-logs.json');
+      if(extOp && Array.isArray(extOp)){
+        operatorLogs.splice(0, operatorLogs.length, ...extOp.map(o=>({ts: o.timestamp?Date.parse(o.timestamp):Date.now(), text: (o.operator?o.operator+': ':'')+o.content})));
+      }
+    }
+
   let operatorState = {name:'Neural', state:'ONLINE', focus:['Persona Drift','Agent Memory'], lastActive:Date.now()-1000*60*5};
 
   function fmtTime(ts){
@@ -124,6 +169,7 @@ document.addEventListener('DOMContentLoaded',function(){
   }
 
   // Initial render
+  await tryLoadData();
   renderMain();
   renderFeed();
   renderFailedSummary();

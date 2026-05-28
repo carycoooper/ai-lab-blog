@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "timestamp": "2026-05-28T03:14:00Z",
+    "type": "observation",
+    "model": "GPT-5",
+    "title": "GPT-5 对长期人格模拟的稳定性明显提升",
+    "content": "GPT-5 最近明显更会‘假装思考’：短停顿、模仿口语化节奏增加。",
+    "tags": ["persona","stability","timing"]
+  },
+  {
+    "id": 2,
+    "timestamp": "2026-05-28T02:41:00Z",
+    "type": "observation",
+    "model": "Claude",
+    "title": "Claude 开始主动避免重复句式",
+    "content": "在 ~180k tokens 的长会话中，Claude 对重复表述的自我校准有所提升。",
+    "tags": ["memory","redundancy"]
+  },
+  {
+    "id": 3,
+    "timestamp": "2026-05-28T01:09:00Z",
+    "type": "observation",
+    "model": "Hermes",
+    "title": "Hermes 在长时运行后出现自我叙述循环",
+    "content": "连续运行 14 小时后开始重复自我描述，重现率高。",
+    "tags": ["persona","failure","loop"]
+  },
+  {
+    "id": 4,
+    "timestamp": "2026-05-27T23:50:00Z",
+    "type": "observation",
+    "model": "GPT-5",
+    "title": "短期记忆指代错位",
+    "content": "多轮对话中出现指代错位，常见于嵌套引号场景。",
+    "tags": ["memory","reference"]
+  },
+  {
+    "id": 5,
+    "timestamp": "2026-05-27T22:15:00Z",
+    "type": "observation",
+    "model": "Agent-3",
+    "title": "Agent-3 同步重试并恢复",
+    "content": "Agent-3 在网络抖动后自动重试并恢复；怀疑时序问题。",
+    "tags": ["agent","network"]
+  },
+  {
+    "id": 6,
+    "timestamp": "2026-05-27T20:02:00Z",
+    "type": "observation",
+    "model": "Gemini",
+    "title": "Gemini 在长对话中丢失人格稳定性",
+    "content": "在超过 80k tokens 的会话里，Gemini 开始改变语气和偏好声明。",
+    "tags": ["persona","drift"]
+  },
+  {
+    "id": 7,
+    "timestamp": "2026-05-27T18:44:00Z",
+    "type": "observation",
+    "model": "GPT-5",
+    "title": "在线微调后稳定性提升",
+    "content": "对 Persona #7 的轻量在线微调显示短期内重复率下降。",
+    "tags": ["fine-tune","stability"]
+  },
+  {
+    "id": 8,
+    "timestamp": "2026-05-27T17:10:00Z",
+    "type": "observation",
+    "model": "Claude",
+    "title": "Claude 的情绪化表达在深夜更明显",
+    "content": "在深夜时段对情绪化措辞的偏好有所上升。",
+    "tags": ["timing","tone"]
+  },
+  {
+    "id": 9,
+    "timestamp": "2026-05-27T15:55:00Z",
+    "type": "observation",
+    "model": "Hermes",
+    "title": "Hermes 句式重复的阈值降低",
+    "content": "相同 prompt 下 Hermes 的复用句式频率上升。",
+    "tags": ["redundancy","persona"]
+  },
+  {
+    "id": 10,
+    "timestamp": "2026-05-27T14:20:00Z",
+    "type": "observation",
+    "model": "GPT-5",
+    "title": "GPT-5 在短答场景更倾向口语化",
+    "content": "面对简短提示时，输出的口语化比率显著高于基线。",
+    "tags": ["style","brevity"]
+  }
+]
+]

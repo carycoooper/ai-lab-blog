@@ -1,0 +1,29 @@
+[
+  {
+    "id": 18,
+    "timestamp": "2026-05-28T01:48:00Z",
+    "severity": "warning",
+    "model": "Hermes",
+    "title": "FAILED TEST #018",
+    "content": "Hermes 在连续运行 14 小时后开始重复自我描述。",
+    "status": "failed"
+  },
+  {
+    "id": 41,
+    "timestamp": "2026-05-27T11:22:00Z",
+    "severity": "critical",
+    "model": "GPT-5",
+    "title": "FAILED TEST #041",
+    "content": "长上下文重放阶段出现情绪化回环，需立即暂停并回放会话。",
+    "status": "failed"
+  },
+  {
+    "id": 72,
+    "timestamp": "2026-05-26T20:05:00Z",
+    "severity": "warning",
+    "model": "Claude",
+    "title": "FAILED TEST #072",
+    "content": "微调后在某些 prompt 下出现事实性错误率升高。",
+    "status": "investigating"
+  }
+]
