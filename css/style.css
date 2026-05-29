@@ -72,12 +72,11 @@ body {
   color: var(--text-secondary);
   text-decoration: none;
   margin-left: 12px;
-  transition: color 120ms linear;
 }
 
 .site-nav a:hover,
 .site-nav a.active {
-  color: var(--text-active);
+  color: #bdbdbd;
 }
 
 .timeline {
@@ -146,7 +145,6 @@ body {
   padding: 2px 8px;
   font-size: 11px;
   cursor: pointer;
-  transition: color 90ms linear;
 }
 
 .filter-btn:hover,

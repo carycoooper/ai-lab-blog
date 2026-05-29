@@ -95,19 +95,19 @@ function setupInfiniteScroll(container) {
 }
 
 function scheduleRealtime(container) {
-  const intervals = [7000, 18000, 43000, 120000];
+  const intervals = [7000, 18000, 43000, 90000, 120000];
   const wait = intervals[Math.floor(Math.random() * intervals.length)];
 
   setTimeout(() => {
-    const longPause = Math.random() < 0.22;
-    if (longPause) {
+    const outage = Math.random() < 0.12;
+    if (outage) {
       const lost = {
         timestamp: new Date().toISOString(),
         content: "SIGNAL LOST",
         type: "critical"
       };
       container.insertBefore(renderEntry(lost), container.firstChild);
-      const resumeDelay = 12000 + Math.floor(Math.random() * 26000);
+      const resumeDelay = 20000 + Math.floor(Math.random() * 7000);
       setTimeout(() => {
         const resumed = {
           timestamp: new Date().toISOString(),
@@ -120,7 +120,7 @@ function scheduleRealtime(container) {
       return;
     }
 
-    const noop = Math.random() < 0.42;
+    const noop = Math.random() < 0.58;
     if (!noop) {
       const anomalyBurst = Math.random() < 0.14;
       const source = anomalyBurst
@@ -184,6 +184,14 @@ function bootRuntime() {
   el.textContent = `runtime: ${h}h ${String(m).padStart(2, "0")}m`;
 }
 
+function bootManualMark(logs) {
+  const el = document.getElementById("manual-mark");
+  if (!el || !logs || logs.length === 0) return;
+  const latest = logs.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
+  const t = formatTime(latest.timestamp);
+  el.textContent = `last manual operator entry: ${t}`;
+}
+
 async function init() {
   const container = document.getElementById("timeline");
   if (!container) return;
@@ -212,6 +220,7 @@ async function init() {
   setupInfiniteScroll(container);
   scheduleRealtime(container);
   bootRuntime();
+  bootManualMark(logs);
 }
 
 document.addEventListener("DOMContentLoaded", init);
