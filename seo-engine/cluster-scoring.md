@@ -83,3 +83,5 @@ actions:
 - add links to 4 orphan notes
 - backfill metadata in 2 records
 ```
+
+Latest score sample: `/seo-engine/weekly-score-2026-W22.md`
