@@ -1,5 +1,5 @@
 /* AI LAB V2 - Observation Terminal */
-const VERSION = "v4";
+const VERSION = "v5";
 const PAGE_SIZE = 24;
 
 let state = {
@@ -40,6 +40,8 @@ function entryDriftClass(entry) {
 function renderEntry(entry) {
   const wrap = document.createElement("div");
   wrap.className = `timeline-entry ${entry.type || "signal"} ${entryDriftClass(entry)}`;
+  if (!entry.content || !entry.content.trim()) wrap.classList.add("blank");
+  if ((entry.content || "").includes("[ entry corrupted ]")) wrap.classList.add("corrupted");
 
   const time = document.createElement("div");
   time.className = "timeline-time";
@@ -47,7 +49,7 @@ function renderEntry(entry) {
 
   const content = document.createElement("div");
   content.className = `timeline-content ${entry.type || "signal"}`;
-  content.textContent = entry.content;
+  content.textContent = entry.content || "";
 
   wrap.appendChild(time);
   wrap.appendChild(content);
@@ -93,11 +95,32 @@ function setupInfiniteScroll(container) {
 }
 
 function scheduleRealtime(container) {
-  const intervals = [7000, 19000, 43000, 60000, 120000];
+  const intervals = [7000, 18000, 43000, 120000];
   const wait = intervals[Math.floor(Math.random() * intervals.length)];
 
   setTimeout(() => {
-    const noop = Math.random() < 0.35;
+    const longPause = Math.random() < 0.22;
+    if (longPause) {
+      const lost = {
+        timestamp: new Date().toISOString(),
+        content: "SIGNAL LOST",
+        type: "critical"
+      };
+      container.insertBefore(renderEntry(lost), container.firstChild);
+      const resumeDelay = 12000 + Math.floor(Math.random() * 26000);
+      setTimeout(() => {
+        const resumed = {
+          timestamp: new Date().toISOString(),
+          content: "feed resumed",
+          type: "failed"
+        };
+        container.insertBefore(renderEntry(resumed), container.firstChild);
+      }, resumeDelay);
+      scheduleRealtime(container);
+      return;
+    }
+
+    const noop = Math.random() < 0.42;
     if (!noop) {
       const anomalyBurst = Math.random() < 0.14;
       const source = anomalyBurst
@@ -105,10 +128,13 @@ function scheduleRealtime(container) {
         : state.allEntries;
       const pick = source[Math.floor(Math.random() * source.length)] || state.allEntries[0];
 
-      const nowEntry = {
+      let nowEntry = {
         ...pick,
         timestamp: new Date().toISOString()
       };
+      if (Math.random() < 0.08) {
+        nowEntry = { ...nowEntry, content: "" };
+      }
 
       const top = renderEntry(nowEntry);
       container.insertBefore(top, container.firstChild);
@@ -146,25 +172,16 @@ function setupControls(container) {
 function bootRuntime() {
   const el = document.getElementById("runtime-mark");
   if (!el) return;
-  state.runtimeMinutes = 47 * 60 + 12;
+  state.runtimeMinutes = 57 * 60 + 13;
   setInterval(() => {
     state.runtimeMinutes += 1;
     const h = Math.floor(state.runtimeMinutes / 60);
     const m = state.runtimeMinutes % 60;
-    el.textContent = `last uninterrupted runtime: ${h}h ${String(m).padStart(2, "0")}m`;
+    el.textContent = `runtime: ${h}h ${String(m).padStart(2, "0")}m`;
   }, 60000);
   const h = Math.floor(state.runtimeMinutes / 60);
   const m = state.runtimeMinutes % 60;
-  el.textContent = `last uninterrupted runtime: ${h}h ${String(m).padStart(2, "0")}m`;
-}
-
-function bootClock() {
-  function tick() {
-    const clock = document.getElementById("site-time");
-    if (clock) clock.textContent = new Date().toTimeString().slice(0, 8);
-  }
-  tick();
-  setInterval(tick, 1000);
+  el.textContent = `runtime: ${h}h ${String(m).padStart(2, "0")}m`;
 }
 
 async function init() {
@@ -195,7 +212,6 @@ async function init() {
   setupInfiniteScroll(container);
   scheduleRealtime(container);
   bootRuntime();
-  bootClock();
 }
 
 document.addEventListener("DOMContentLoaded", init);
