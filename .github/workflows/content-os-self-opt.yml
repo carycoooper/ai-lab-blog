@@ -1,0 +1,48 @@
+name: AI Lab Content OS Self-Optimization
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  push:
+    branches:
+      - codex/site-rebuild-20260529
+    paths:
+      - "notes/**"
+      - "seo-engine/**"
+      - "scripts/self_optimization.py"
+      - "data/execution-registry.json"
+  workflow_dispatch:
+
+jobs:
+  self-optimize:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Self-Optimization Engine
+        run: |
+          python scripts/self_optimization.py
+
+      - name: Commit updates
+        run: |
+          git config user.name "AI Lab Bot"
+          git config user.email "ai-lab-bot@ai-lab.system"
+          git add seo-engine/self-optimization-report.auto.md seo-engine/cluster-scoring.md
+          git commit -m "chore: self-optimization report refresh [skip ci]" || echo "No changes"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: codex/site-rebuild-20260529

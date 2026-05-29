@@ -85,3 +85,5 @@ actions:
 ```
 
 Latest score sample: `/seo-engine/weekly-score-2026-W22.md`
+
+Latest self-optimization report: `/seo-engine/self-optimization-report.auto.md`
