@@ -24,6 +24,8 @@
     <article class="note-article">
       <h1>Claude long-session repetition patterns</h1>
       <p class="note-meta">2026.05.29 / operator record</p>
+      <p class="note-meta">workflow_id: content-generation / execution_id: run-2026-05-29-automation-layer-01 / cluster: prompt-engineering</p>
+      <p><a class="note-link" href="../codex/workflows/content-generation.html">workflow link</a> · <a class="note-link" href="../codex/executions/run-2026-05-29-automation-layer-01.html">execution link</a> · <a class="note-link" href="../seo-engine/content-graph.md">seo graph link</a></p>
       <p>This note started as a short check for repetition. It turned into a long watch because repetition is not binary. Some runs are clean for thirty turns, then collapse into a small loop in four turns. The common loop is not exact sentence duplication. It is more like repeated structure with fresh words.</p>
       <p>Pattern 1: two-step framing repeats. The model starts answers with almost the same shape: acknowledge, then summarize scope, then answer. If the thread is long and the prompt style is stable, this shape reappears every few turns. It does not look broken on first read. It looks polite. But in logs it is obvious.</p>
       <p>Pattern 2: hedge-word drift. Around the late-night window, hedge words increase. Not always, but often enough to mark. When hedge density rises, confidence in concrete detail tends to fall. This is usually where operators think the model is being careful. In logs it sometimes looks like fatigue.</p>
