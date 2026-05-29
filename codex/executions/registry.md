@@ -28,3 +28,9 @@ For every new run:
 1. Append one object in `data/execution-registry.json`.
 2. Append one readable block in this file.
 3. Link the run page in `codex/executions/run-logs.html`.
+
+## Validation
+
+Before pushing updates, run:
+
+`node js/validate-execution-registry.js`
