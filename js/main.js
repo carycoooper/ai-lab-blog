@@ -99,7 +99,7 @@ function scheduleRealtime(container) {
   const wait = intervals[Math.floor(Math.random() * intervals.length)];
 
   setTimeout(() => {
-    const outage = Math.random() < 0.12;
+    const outage = Math.random() < 0.1;
     if (outage) {
       const lost = {
         timestamp: new Date().toISOString(),
@@ -120,7 +120,7 @@ function scheduleRealtime(container) {
       return;
     }
 
-    const noop = Math.random() < 0.58;
+    const noop = Math.random() < 0.66;
     if (!noop) {
       const anomalyBurst = Math.random() < 0.14;
       const source = anomalyBurst
