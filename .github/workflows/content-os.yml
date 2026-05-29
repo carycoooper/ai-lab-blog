@@ -1,0 +1,47 @@
+name: AI Lab Content OS Automation
+
+on:
+  push:
+    branches:
+      - codex/site-rebuild-20260529
+    paths:
+      - "data/execution-registry.json"
+      - "codex/executions/**"
+      - "codex/workflows/**"
+      - "codex/prompts/**"
+      - "scripts/automation.py"
+  workflow_dispatch:
+
+jobs:
+  render-system-graph:
+    name: Render Graph + Map
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run automation
+        run: |
+          python scripts/automation.py
+
+      - name: Commit generated files
+        run: |
+          git config user.name "AI Lab Bot"
+          git config user.email "ai-lab-bot@example.com"
+          git add ai-lab/map.auto.md seo-engine/content-graph.auto.md
+          git commit -m "chore: auto-render map and seo graph [skip ci]" || echo "No changes"
+
+      - name: Push updates
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: codex/site-rebuild-20260529
