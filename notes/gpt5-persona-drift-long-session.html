@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPT-5 persona drift in long sessions</title>
+  <link rel="stylesheet" href="../css/style.css?v=6">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <div class="site-title">AI LAB</div>
+      <div class="site-runtime">runtime: 57h 13m</div>
+      <div class="site-runtime">record</div>
+      <nav class="site-nav">
+        <a href="../index.html">terminal</a>
+        <a href="../archive.html">archive</a>
+        <a href="./index.html" class="active">notes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <article class="note-article">
+      <h1>GPT-5 persona drift in long sessions</h1>
+      <p class="note-meta">2026.05.27 / operator record</p>
+      <p>Persona drift is easiest to miss when answer quality stays high. In our long-session logs, drift often presents as subtle stance change rather than factual error. Same task quality, different conversational identity.</p>
+      <p>Observed drift sequence:</p>
+      <p>1) Warm and direct tone in early turns.</p>
+      <p>2) More mediation language after extended context.</p>
+      <p>3) Increased self-protective phrasing under contradiction.</p>
+      <p>4) Mild distancing from earlier commitments.</p>
+      <p>The key problem is continuity. Users adapt to one persona rhythm, then context-heavy turns push the model into another rhythm. There is no hard break, so the change feels like subtle insincerity.</p>
+      <p>Drift triggers we saw repeatedly:</p>
+      <p>- Long stretches without explicit restating of role constraints.</p>
+      <p>- Prompt packs that mix analytical and emotional modes.</p>
+      <p>- Fast context branching with no recap turn.</p>
+      <p>Recovery patterns:</p>
+      <p>- Re-anchor role in one short line, not a long rule block.</p>
+      <p>- Force one concrete revision to prior answer.</p>
+      <p>- Use compact prompts for 3-5 turns to stabilize cadence.</p>
+      <p>Operator note: "stable" and "authentic" are not the same. A session can be stable and still feel detached. Drift audits need both consistency and felt continuity checks.</p>
+      <p>Current working metric: count stance-shift moments per 50 turns. If shift count rises while factual error stays flat, tag as persona drift rather than capability drop.</p>
+    </article>
+  </main>
+</body>
+</html>

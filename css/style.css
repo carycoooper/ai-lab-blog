@@ -179,6 +179,56 @@ body {
   padding: 36px 0;
 }
 
+.notes-log {
+  border-left: 1px solid var(--border);
+  padding-left: 14px;
+}
+
+.note-item {
+  margin-bottom: 24px;
+}
+
+.note-time {
+  font-family: "IBM Plex Mono", "JetBrains Mono", monospace;
+  color: var(--text-secondary);
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.note-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.note-link:hover {
+  color: var(--text-active);
+}
+
+.note-meta {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.note-article {
+  border-left: 1px solid var(--border);
+  padding-left: 14px;
+  max-width: 760px;
+}
+
+.note-article h1 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-active);
+  margin-bottom: 10px;
+}
+
+.note-article p {
+  margin-bottom: 14px;
+}
+
 @media (max-width: 700px) {
   .container { padding: 14px 12px 24px 12px; }
   .header-content {

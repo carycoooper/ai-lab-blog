@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude long-session repetition patterns</title>
+  <link rel="stylesheet" href="../css/style.css?v=6">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <div class="site-title">AI LAB</div>
+      <div class="site-runtime">runtime: 57h 13m</div>
+      <div class="site-runtime">record</div>
+      <nav class="site-nav">
+        <a href="../index.html">terminal</a>
+        <a href="../archive.html">archive</a>
+        <a href="./index.html" class="active">notes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <article class="note-article">
+      <h1>Claude long-session repetition patterns</h1>
+      <p class="note-meta">2026.05.29 / operator record</p>
+      <p>This note started as a short check for repetition. It turned into a long watch because repetition is not binary. Some runs are clean for thirty turns, then collapse into a small loop in four turns. The common loop is not exact sentence duplication. It is more like repeated structure with fresh words.</p>
+      <p>Pattern 1: two-step framing repeats. The model starts answers with almost the same shape: acknowledge, then summarize scope, then answer. If the thread is long and the prompt style is stable, this shape reappears every few turns. It does not look broken on first read. It looks polite. But in logs it is obvious.</p>
+      <p>Pattern 2: hedge-word drift. Around the late-night window, hedge words increase. Not always, but often enough to mark. When hedge density rises, confidence in concrete detail tends to fall. This is usually where operators think the model is being careful. In logs it sometimes looks like fatigue.</p>
+      <p>Pattern 3: pseudo-recovery. After a repetition cluster, one answer looks fresh and specific, then the same old structure returns. This is why one clean turn does not mean the issue is gone. We had several false recoveries in this dataset.</p>
+      <p>Counter-case: short directives and forced brevity reduce visible repetition in many threads. But this can hide the pattern rather than remove it. The shape gets compressed, not eliminated.</p>
+      <p>Operator note: at 02:58 I logged "Claude repeated less." Two minutes later I logged that this may be wrong. Both entries were true from different windows. The disagreement is part of the data, not a bug in note-taking.</p>
+      <p>Working rule for next runs: do not classify repetition from a single streak. Tag it only after context switch plus recovery check. If a context switch preserves phrase variety, mark stable. If it restores old structure immediately, mark drift risk.</p>
+    </article>
+  </main>
+</body>
+</html>
