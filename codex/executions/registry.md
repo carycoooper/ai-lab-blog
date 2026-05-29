@@ -34,3 +34,9 @@ For every new run:
 Before pushing updates, run:
 
 `node js/validate-execution-registry.js`
+
+## Quick Create
+
+Create a new run draft with:
+
+`node js/new-execution-run.js <execution_id> <date> <workflow_id> <prompt_id> <cluster>`
