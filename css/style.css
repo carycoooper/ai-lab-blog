@@ -22,7 +22,7 @@ body {
 
 .container {
   max-width: 920px;
-  margin: 0;
+  margin: 0 auto;
   padding: 18px 16px 26px 22px;
 }
 
@@ -35,7 +35,7 @@ body {
 
 .header-content {
   max-width: 920px;
-  margin: 0;
+  margin: 0 auto;
   padding: 0 16px 0 22px;
   display: flex;
   align-items: baseline;
