@@ -195,3 +195,5 @@ SEO here is structure design for search comprehension.
 SEO Engine is the memory layer of AI Lab.
 
 It determines what is understood, discovered, and ranked.
+
+See also: `/seo-engine/cluster-scoring.md`
