@@ -122,7 +122,7 @@ function scheduleRealtime(container) {
 
     const noop = Math.random() < 0.66;
     if (!noop) {
-      const anomalyBurst = Math.random() < 0.14;
+      const anomalyBurst = Math.random() < 0.08;
       const source = anomalyBurst
         ? state.allEntries.filter((e) => e.type === "critical" || e.type === "failed")
         : state.allEntries;
