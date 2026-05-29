@@ -1,0 +1,63 @@
+name: AI Lab Event-Driven Content OS
+
+on:
+  push:
+    branches:
+      - codex/site-rebuild-20260529
+    paths:
+      - "codex/executions/**"
+      - "codex/workflows/**"
+      - "codex/prompts/**"
+      - "blog/**"
+      - "scripts/event_engine.py"
+      - "scripts/automation.py"
+  workflow_dispatch:
+
+jobs:
+  event-driven-run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jinja2 markdown
+
+      - name: Detect Changed Events
+        run: |
+          echo "Detecting content changes..."
+          git diff --name-only HEAD~1 HEAD > changes.txt
+          cat changes.txt
+
+      - name: Run Event Engine
+        run: |
+          python scripts/event_engine.py
+
+      - name: Regenerate Graphs
+        run: |
+          python scripts/automation.py
+
+      - name: Commit updates
+        run: |
+          git config user.name "AI Lab Bot"
+          git config user.email "ai-lab-bot@ai-lab.system"
+          git add blog/ seo-engine/ ai-lab/
+          git commit -m "chore: event-driven update auto regenerate graph and sync [skip ci]" || echo "No changes"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: codex/site-rebuild-20260529
